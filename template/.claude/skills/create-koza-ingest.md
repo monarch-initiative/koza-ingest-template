@@ -26,16 +26,16 @@ Follow these steps in order:
 
 ### 2. Update download.yaml with New Entry
 
-Add a new entry to `src/{{ project_slug }}/download.yaml`:
+Add a new entry to `download.yaml` (at repo root):
 
 ```yaml
-# Existing entries above...
-
-- url: "https://example.org/data/file.tsv"
-  local_name: "<ingest_name>.tsv"
+downloads:
+  # Existing entries above...
+  - url: "https://example.org/data/file.tsv"
+    local_name: "data/<ingest_name>.tsv"
 ```
 
-**IMPORTANT:** Append to the existing file, do not replace it.
+**IMPORTANT:** Append to the existing downloads list, do not replace it.
 
 ### 3. Download the Data
 
@@ -58,7 +58,7 @@ Examine the data file structure:
 
 ### 5. Create <ingest_name>.yaml Transform Config
 
-Create `src/{{ project_slug }}/<ingest_name>.yaml`:
+Create `src/<ingest_name>.yaml`:
 
 ```yaml
 name: "<ingest_name>"
@@ -108,7 +108,7 @@ With this config, you get clean column names: `Phenotype`, `Gene Symbols`, `MIM 
 
 Create a temporary transform to verify the config is correct.
 
-Create `src/{{ project_slug }}/<ingest_name>.py`:
+Create `src/<ingest_name>.py`:
 
 ```python
 from typing import Any
@@ -130,7 +130,7 @@ def transform_record(koza_transform: KozaTransform, row: dict[str, Any]) -> list
 Run with row limit:
 
 ```bash
-uv run koza transform --source src/{{ project_slug }}/<ingest_name>.yaml --row-limit 3
+uv run koza transform --source src/<ingest_name>.yaml --row-limit 3
 ```
 
 Verify that:
@@ -254,12 +254,8 @@ Create test file `tests/test_<ingest_name>.py` with fixtures using actual data r
 
 ```python
 import pytest
-import sys
-import os
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../src'))
 from biolink_model.datamodel.pydanticmodel_v2 import GeneToDiseaseAssociation
-from {{ project_slug }}.<ingest_name> import transform_record
+from <ingest_name> import transform_record
 
 
 @pytest.fixture
@@ -345,7 +341,7 @@ just test
 uv run pytest tests/test_<ingest_name>.py -v
 
 # Run full transform for your ingest
-uv run koza transform --source src/{{ project_slug }}/<ingest_name>.yaml
+uv run koza transform --source src/<ingest_name>.yaml
 
 # Check output
 ls -lh output/
@@ -377,8 +373,8 @@ writer:
 
 | File | Action |
 |------|--------|
-| `src/{{ project_slug }}/download.yaml` | Append new download entry |
-| `src/{{ project_slug }}/<ingest_name>.yaml` | Create new transform config |
-| `src/{{ project_slug }}/<ingest_name>.py` | Create new transform code |
+| `download.yaml` | Append new download entry |
+| `src/<ingest_name>.yaml` | Create new transform config |
+| `src/<ingest_name>.py` | Create new transform code |
 | `tests/test_<ingest_name>.py` | Create new test file |
 | `justfile` | Update TRANSFORMS variable |

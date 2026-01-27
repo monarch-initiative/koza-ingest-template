@@ -1,11 +1,14 @@
-# {{project_name}}
+# Koza Ingest
 
 This is a Koza ingest repository for transforming biological/biomedical data into Biolink model format.
 
 ## Project Structure
 
 - `download.yaml` - Configuration for downloading source data
-- `*.py` / `*.yaml` pairs - Transform code and configuration for each ingest
+- `src/` - Transform code and configuration
+  - `*.py` / `*.yaml` pairs - Transform code and koza config for each ingest
+  - `*_mapping.yaml` - Lookup mapping files (if needed)
+- `scripts/` - Utility scripts (download, preprocessing)
 - `tests/` - Unit tests for transforms
 - `output/` - Generated nodes and edges (gitignored)
 - `data/` - Downloaded source data (gitignored)
@@ -21,8 +24,8 @@ This is a Koza ingest repository for transforming biological/biomedical data int
 
 When adding a new ingest:
 1. Add download configuration to `download.yaml`
-2. Create `<ingest_name>.py` with transform code
-3. Create `<ingest_name>.yaml` with koza configuration
+2. Create `src/<ingest_name>.py` with transform code
+3. Create `src/<ingest_name>.yaml` with koza configuration
 4. Add `<ingest_name>` to TRANSFORMS list in justfile
 5. Create tests in `tests/test_<ingest_name>.py`
 

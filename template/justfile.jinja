@@ -1,5 +1,8 @@
 # {{project_name}} justfile
 
+# Package directory
+PKG := "src"
+
 # Explicitly enumerate transforms (add new ingests here)
 TRANSFORMS := ""
 
@@ -20,7 +23,7 @@ install:
 # Download source data
 [group('ingest')]
 download:
-    koza download download.yaml
+    uv run python scripts/download.py
 
 # Run all transforms
 [group('ingest')]
@@ -30,14 +33,14 @@ transform-all:
     for t in {{ "{{" }}TRANSFORMS{{ "}}" }}; do
         if [ -n "$t" ]; then
             echo "Transforming $t..."
-            koza transform $t.yaml
+            uv run koza transform {{ "{{" }}PKG{{ "}}" }}/$t.yaml
         fi
     done
 
 # Run specific transform
 [group('ingest')]
 transform NAME:
-    koza transform {{ "{{" }}NAME{{ "}}" }}.yaml
+    uv run koza transform {{ "{{" }}PKG{{ "}}" }}/{{ "{{" }}NAME{{ "}}" }}.yaml
 
 # Run tests
 [group('development')]
