@@ -1,0 +1,79 @@
+# {{project_name}} justfile
+
+# Package directory
+PKG := "src"
+
+# Explicitly enumerate transforms (add new ingests here)
+TRANSFORMS := ""
+
+# List all commands
+_default:
+    @just --list
+
+# Initialize a new project
+[group('project management')]
+setup: _git-init install _git-add
+    git commit -m "Initialize {{project_name}}"
+
+# Install dependencies
+[group('project management')]
+install:
+    uv sync --group dev
+
+# Download source data
+[group('ingest')]
+download: install
+    uv run python scripts/download.py
+
+# Run all transforms
+[group('ingest')]
+transform-all: download
+    #!/usr/bin/env bash
+    set -euo pipefail
+    for t in {{ "{{" }}TRANSFORMS{{ "}}" }}; do
+        if [ -n "$t" ]; then
+            echo "Transforming $t..."
+            uv run koza transform {{ "{{" }}PKG{{ "}}" }}/$t.yaml
+        fi
+    done
+
+# Run full pipeline: install, download, transform, test
+[group('ingest')]
+run: transform-all test
+
+# Run specific transform
+[group('ingest')]
+transform NAME:
+    uv run koza transform {{ "{{" }}PKG{{ "}}" }}/{{ "{{" }}NAME{{ "}}" }}.yaml
+
+# Run tests
+[group('development')]
+test: install
+    uv run pytest
+
+# Run tests with coverage
+[group('development')]
+test-cov: install
+    uv run pytest --cov=. --cov-report=term-missing
+
+# Lint code
+[group('development')]
+lint:
+    uv run ruff check .
+
+# Format code
+[group('development')]
+format:
+    uv run ruff format .
+
+# Clean output directory
+[group('ingest')]
+clean:
+    rm -rf output/
+
+# Hidden recipes
+_git-init:
+    git init
+
+_git-add:
+    git add .

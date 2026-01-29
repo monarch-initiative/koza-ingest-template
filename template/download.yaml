@@ -1,0 +1,9 @@
+# Download configuration for {{project_name}}
+# Add entries for each data source
+
+downloads: []
+
+# Example entry:
+# downloads:
+#   - url: "https://example.org/data.tsv"
+#     local_name: "data/example.tsv"
