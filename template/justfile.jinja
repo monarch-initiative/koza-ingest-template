@@ -22,12 +22,12 @@ install:
 
 # Download source data
 [group('ingest')]
-download:
+download: install
     uv run python scripts/download.py
 
 # Run all transforms
 [group('ingest')]
-transform-all:
+transform-all: download
     #!/usr/bin/env bash
     set -euo pipefail
     for t in {{ "{{" }}TRANSFORMS{{ "}}" }}; do
@@ -37,6 +37,10 @@ transform-all:
         fi
     done
 
+# Run full pipeline: install, download, transform, test
+[group('ingest')]
+run: transform-all test
+
 # Run specific transform
 [group('ingest')]
 transform NAME:
@@ -44,12 +48,12 @@ transform NAME:
 
 # Run tests
 [group('development')]
-test:
+test: install
     uv run pytest
 
 # Run tests with coverage
 [group('development')]
-test-cov:
+test-cov: install
     uv run pytest --cov=. --cov-report=term-missing
 
 # Lint code
