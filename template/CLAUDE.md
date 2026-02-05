@@ -32,3 +32,4 @@ When adding a new ingest:
 ## Skills
 
 - `.claude/skills/create-koza-ingest.md` - Create new koza ingests
+- `.claude/skills/update-template.md` - Update to latest template version
