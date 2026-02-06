@@ -39,7 +39,7 @@ transform-all: download
 
 # Run full pipeline: install, download, transform, test
 [group('ingest')]
-run: transform-all test
+run: test transform-all
 
 # Run specific transform
 [group('ingest')]
