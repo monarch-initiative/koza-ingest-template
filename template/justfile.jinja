@@ -23,7 +23,7 @@ install:
 # Download source data
 [group('ingest')]
 download: install
-    uv run python scripts/download.py
+    uv run downloader download.yaml
 
 # Run all transforms
 [group('ingest')]
