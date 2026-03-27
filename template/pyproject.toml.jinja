@@ -27,6 +27,9 @@ dev = [
     "ruff>=0.4.8",
 ]
 
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
 [tool.hatch.version]
 source = "uv-dynamic-versioning"
 
