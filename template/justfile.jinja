@@ -37,9 +37,14 @@ transform-all: download
         fi
     done
 
-# Run full pipeline: install, download, transform, test
+# Emit output/release-metadata.yaml describing this build's upstream sources and artifacts
 [group('ingest')]
-run: test transform-all
+metadata:
+    uv run python scripts/write_metadata.py
+
+# Run full pipeline: install, download, transform, metadata, test
+[group('ingest')]
+run: test transform-all metadata
 
 # Run specific transform
 [group('ingest')]

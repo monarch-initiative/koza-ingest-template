@@ -1,0 +1,53 @@
+"""Upstream source version fetcher for {{project_name}}.
+
+Each kozahub ingest implements `get_source_versions()` which returns a list
+of SourceVersion-shaped dicts conforming to the kozahub-metadata-schema.
+The `kozahub_metadata_schema.writer` module provides reusable fetchers
+covering the common patterns — pick whichever fits your source.
+
+Replace the stub source(s) below with the upstreams this ingest consumes.
+"""
+
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Any
+
+from kozahub_metadata_schema import (
+    now_iso,
+    urls_from_download_yaml,
+    # version_from_http_last_modified,
+    # version_from_url_path,
+    # version_from_github_release,
+    # version_from_github_branch,
+    # version_from_file_header,
+)
+
+
+INGEST_DIR = Path(__file__).resolve().parents[1]
+DOWNLOAD_YAML = INGEST_DIR / "download.yaml"
+
+
+def get_source_versions() -> list[dict[str, Any]]:
+    # Example: single-source ingest using HTTP Last-Modified for versioning.
+    # version, method = version_from_http_last_modified(some_url)
+    #
+    # Example: source with version embedded in the URL path.
+    # version, method = version_from_url_path(some_url, r"/v(\d+\.\d+)/")
+    #
+    # Example: GitHub-released source.
+    # version, method = version_from_github_release("owner/repo")
+    #
+    # For multi-source ingests, return one dict per logical source. URLs can
+    # be filtered out of download.yaml with `urls_from_download_yaml(DOWNLOAD_YAML, contains=[...])`.
+
+    return [
+        {
+            "id": "infores:CHANGEME",
+            "name": "CHANGEME",
+            "urls": urls_from_download_yaml(DOWNLOAD_YAML),
+            "version": "unknown",
+            "version_method": "unavailable",
+            "retrieved_at": now_iso(),
+        }
+    ]
